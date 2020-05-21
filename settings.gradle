@@ -1,0 +1,2 @@
+rootProject.name='Contacts and Imgur'
+include ':app'
