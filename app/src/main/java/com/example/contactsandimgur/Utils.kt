@@ -21,40 +21,51 @@ fun getContacts(context: Context): ArrayList<String>{
     }
     return contactList
 }
-fun storeFile(context: Context,contactList:ArrayList<String>){
+fun storeFile(context: Context,contactList:ArrayList<String>):Boolean{
     val filename = "Contacts.csv"
     val fileContents = contactList.toString()
     context.openFileOutput(filename, Context.MODE_PRIVATE).use {
-        it.write(fileContents.toByteArray())
+        return try {
+            it.write(fileContents.toByteArray())
+            Log.d("MainActivity","File stored in ${context.filesDir.absolutePath} ")
+            true
+        }
+        catch (t:Throwable){
+            Log.d("MainActivity","Failure in storing file !! ")
+            false
+        }
     }
-    Log.d("MainActivity","File stored in ${context.filesDir.absolutePath} ")
-}
-fun zipFileAtPath(context: Context) {
+    }
+fun zipFileAtPath(context: Context,status:Boolean) {
     val sourcePath="${context.filesDir.path}/Contacts.csv"
     val toLocation="${context.filesDir.path}/Contacts.zip"
     val BUFFER = 2048
     val sourceFile = File(sourcePath)
-    try {
-        var origin: BufferedInputStream? = null
-        val dest = FileOutputStream(toLocation)
-        val out = ZipOutputStream(
-            BufferedOutputStream(
-                dest
+    if (status) {
+        try {
+            var origin: BufferedInputStream? = null
+            val dest = FileOutputStream(toLocation)
+            val out = ZipOutputStream(
+                BufferedOutputStream(
+                    dest
+                )
             )
-        )
-        val data = ByteArray(BUFFER)
-        val fi = FileInputStream(sourcePath)
-        origin = BufferedInputStream(fi, BUFFER)
-        val entry =
-            ZipEntry(sourcePath)
-        entry.time = sourceFile.lastModified() // to keep modification time after unzipping
-        out.putNextEntry(entry)
-        var count: Int
-        while (origin.read(data, 0, BUFFER).also { count = it } != -1) {
-            out.write(data, 0, count)
+            val data = ByteArray(BUFFER)
+            val fi = FileInputStream(sourcePath)
+            origin = BufferedInputStream(fi, BUFFER)
+            val entry =
+                ZipEntry(sourcePath)
+            entry.time = sourceFile.lastModified() // to keep modification time after unzipping
+            out.putNextEntry(entry)
+            var count: Int
+            while (origin.read(data, 0, BUFFER).also { count = it } != -1) {
+                out.write(data, 0, count)
+            }
+            out.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        out.close()
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
+    else
+        Log.d("MainActivity","Contacts.csv doesn't exist")
 }

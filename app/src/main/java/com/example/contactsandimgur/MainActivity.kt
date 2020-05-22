@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
 import java.util.zip.ZipEntry
@@ -40,7 +41,12 @@ class MainActivity : AppCompatActivity() {
         }
         button.setOnClickListener {
             button.visibility=View.GONE
-            workManager.enqueue(OneTimeWorkRequest.from(CompressWork::class.java))
+            var continuation=workManager.beginWith(OneTimeWorkRequest.from(StoreContactWorker::class.java))
+            val zipContactWorker=OneTimeWorkRequest.Builder(ZipContactWorker::class.java).build()
+            continuation=continuation.then(zipContactWorker)
+            continuation.enqueue()
+            Snackbar.make(it,"Operation Success", Snackbar.LENGTH_LONG).show()
+
 //            zipFileAtPath()
 //            getContacts(textView)
 //            storeFile()
