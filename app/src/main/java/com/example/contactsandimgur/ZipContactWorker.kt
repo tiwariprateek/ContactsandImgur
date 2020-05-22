@@ -28,7 +28,7 @@ class ZipContactWorker(ctx:Context,params:WorkerParameters):Worker(ctx,params) {
             origin = BufferedInputStream(fi, BUFFER)
             val entry =
                 ZipEntry(sourcePath)
-            entry.time = sourceFile.lastModified() // to keep modification time after unzipping
+            entry.time = sourceFile.lastModified()
             out.putNextEntry(entry)
             var count: Int
             while (origin.read(data, 0, BUFFER).also { count = it } != -1) {
