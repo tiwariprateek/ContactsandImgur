@@ -14,5 +14,23 @@
         android:id="@+id/imagesFragment"
         android:name="com.example.contactsandimgur.ui.ImagesFragment"
         android:label="fragment_images"
-        tools:layout="@layout/fragment_images" />
+        tools:layout="@layout/fragment_images" >
+        <action
+            android:id="@+id/action_imagesFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+        <argument
+            android:name="imageUri"
+            app:argType="string"
+            android:defaultValue="uri" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.contactsandimgur.ui.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_cameraFragment_to_imagesFragment3"
+            app:destination="@id/imagesFragment" />
+    </fragment>
 </navigation>
